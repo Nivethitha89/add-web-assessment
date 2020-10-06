@@ -1,0 +1,18 @@
+uuid: d20dc22a-819f-4b3c-ac56-863f579d8d54
+langcode: en
+status: true
+dependencies:
+  module:
+    - addweb
+    - serialization
+    - user
+id: custom_rest_resource
+plugin_id: custom_rest_resource
+granularity: resource
+configuration:
+  methods:
+    - GET
+  formats:
+    - json
+  authentication:
+    - cookie

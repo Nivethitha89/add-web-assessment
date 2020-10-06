@@ -1,0 +1,41 @@
+<?php
+/**
+ * @file
+ * Contains addweb.module..
+ */
+ 
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function addweb_form_system_site_information_settings_alter(&$form, $form_state, $form_id){
+  //Add site api key field to system site info form
+  $api_key = \Drupal::config('siteapikey.configuration')->get('siteapikey');
+  $form['site_information']['siteapikey']= array(
+	'#type' => 'textfield',
+	'#title' => t('Site API Key'),
+	'#default_value' => $api_key ? $api_key : 'No API Key yet',
+	'#description' => t('An API Key to access site pages in JSON format.'),
+  );
+  
+  //Change form submit button text
+  if($api_key != null) {
+   $form['actions']['submit']['#value'] = t('Update configuration');
+  }
+  
+  //Handle form submission
+  $form['#submit'][] = 'addweb_submit_handler';
+	
+}
+
+/**
+* Form submit handler to set site api key value and return drupal message
+*/
+function addweb_submit_handler($form, &$form_state) {
+   $config = \Drupal::configFactory()->getEditable('siteapikey.configuration');
+   $api_key = $form_state->getValue('siteapikey');
+   if($api_key != null ){
+	 $config->set('siteapikey', $api_key);
+	 $config->save();
+	 \Drupal::messenger()->addMessage("The Site API key has been saved with ".$api_key);
+   }
+}
